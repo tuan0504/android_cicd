@@ -27,14 +27,14 @@ public class MainRepositoryImp implements MainRepository {
     Pattern pUrl = Pattern.compile("http[s]?:\\/\\/(www\\.)?[^\\s]?\\/?[^\\s]*");
     Pattern pMentions = Pattern.compile("@[^\\s]*");
 
-    @Inject
     AppExecutors executors;
-
-    @Inject
-    @ApplicationContext
     Context context;
 
-    @Inject MainRepositoryImp(){}
+    @Inject
+    public MainRepositoryImp(AppExecutors executors, @ApplicationContext Context context){
+        this.executors = executors;
+        this.context = context;
+    }
 
     @Override
     public LiveData<Resource<String>> getJson(String value) {

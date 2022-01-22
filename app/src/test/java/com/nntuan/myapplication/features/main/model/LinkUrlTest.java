@@ -2,11 +2,14 @@ package com.nntuan.myapplication.features.main.model;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 
+import com.nntuan.myapplication.core.Status;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class LinkUrlTest {
     @Rule
@@ -19,8 +22,8 @@ public class LinkUrlTest {
     @Test
     public void createInstance() {
         String url = "https://www.linkedin.com/";
-        String title = "LinkedIn: Log In or Sign Up";
         LinkUrl data = new LinkUrl(url);
-        assertEquals(data.title, title);
+        assertNotEquals("", data.title);
+        assertNotEquals(Status.ERROR.name(), data.title);
     }
 }

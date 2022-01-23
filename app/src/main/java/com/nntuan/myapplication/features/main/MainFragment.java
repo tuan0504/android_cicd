@@ -48,7 +48,5 @@ public class MainFragment extends Fragment {
         binding.button.setOnClickListener(view -> {
             mViewModel.requestJsonFromInput(binding.txtUserComments.getText().toString());
         });
-
-        mViewModel.formatJson.observe(getViewLifecycleOwner(), s -> binding.txtFormatJson.setText(s));
     }
 }

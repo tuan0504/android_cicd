@@ -1,13 +1,22 @@
-apply plugin: 'com.android.application'
-apply plugin: 'dagger.hilt.android.plugin'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-parcelize'
+    id "kotlin-kapt"
+    id "androidx.navigation.safeargs.kotlin"
+    id 'com.google.firebase.crashlytics'
+    id 'dagger.hilt.android.plugin'
+}
+
+apply from: 'jacoco.gradle'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 31
 
     defaultConfig {
-        applicationId "com.nntuan.myapplication"
-        minSdk 21
-        targetSdk 29
+        applicationId "com.nn.financekid"
+        minSdkVersion 24
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
 
@@ -18,42 +27,118 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField("Boolean", "ENABLE_LOG", 'false' )
+            buildConfigField("String", "APPID_KEY", "\"60c6fbeb4b93ac653c492ba806fc346d\"" )
         }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+
+        debug {
+            buildConfigField("Boolean", "ENABLE_LOG", 'true')
+            buildConfigField("String", "APPID_KEY", "\"60c6fbeb4b93ac653c492ba806fc346d\"" )
+            ext.enableCrashlytics = false
+        }
     }
 
     buildFeatures {
-        dataBinding = true
+        dataBinding true
+        viewBinding true
+    }
+
+    compileOptions {
+        sourceCompatibility(JavaVersion.VERSION_11)
+        targetCompatibility(JavaVersion.VERSION_11)
+    }
+
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources true
+        }
     }
 }
 
+def lifecycleVersion = '2.4.0'
+def navigationVersion = "2.4.0-rc01"
+def retrofitVersion = '2.4.0'
+def workVersions = '2.7.1'
+def roomVersion = '2.4.1'
+def kotlinVersion = "1.6.10"
+def core_ktx = '1.7.0'
+def hiltVersion = '2.40.5'
+def moshi = '1.13.0'
+def robolectric = '4.6.1'
+def firebase= '29.0.4'
+
 dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    // Support UI androidx
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    implementation "com.google.android.material:material:1.6.0-alpha02"
+    implementation "androidx.cardview:cardview:1.0.0"
+    implementation "androidx.recyclerview:recyclerview:1.2.1"
+    implementation "androidx.appcompat:appcompat:1.4.1"
+    implementation "androidx.viewpager2:viewpager2:1.0.0"
+    implementation "androidx.fragment:fragment-ktx:1.4.0"
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+    implementation 'joda-time:joda-time:2.10'
+    implementation "androidx.core:core-ktx:$core_ktx"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
-    implementation 'androidx.appcompat:appcompat:1.3.0'
-    implementation "com.google.android.material:material:1.3.0"
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'com.google.code.gson:gson:2.8.7'
-    implementation "org.jsoup:jsoup:1.14.3"
+    //Traffic Debugging
+    implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
 
+    // Firebase
+    implementation platform("com.google.firebase:firebase-bom:$firebase")
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
 
-    // ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel:$lifecycleVersion")
-    implementation("androidx.lifecycle:lifecycle-livedata:$lifecycleVersion")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycleVersion")
+    // Workingman
+    implementation "androidx.work:work-runtime-ktx:$workVersions"
 
-    // DI
+    // Navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
+
+    //KTX lifecycle
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycleVersion}"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:${lifecycleVersion}"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:${lifecycleVersion}"
+    implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:${lifecycleVersion}"
+
+    // Retrofit
+    implementation "com.squareup.retrofit2:retrofit:${retrofitVersion}"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:${retrofitVersion}"
+    implementation "com.squareup.retrofit2:converter-moshi:${retrofitVersion}"
+
+    //room
+    implementation "androidx.room:room-runtime:${roomVersion}"
+    implementation "androidx.room:room-rxjava2:${roomVersion}"
+    kapt "androidx.room:room-compiler:${roomVersion}"
+    testImplementation "androidx.room:room-testing:${roomVersion}"
+
+    // Dagger
     implementation "com.google.dagger:hilt-android:${hiltVersion}"
-    annotationProcessor "com.google.dagger:hilt-android-compiler:${hiltVersion}"
+    kapt "com.google.dagger:hilt-android-compiler:${hiltVersion}"
 
-    // Test
+    // moshi
+    implementation "com.squareup.moshi:moshi:${moshi}"
+    implementation "com.squareup.moshi:moshi-adapters:${moshi}"
+    implementation "com.squareup.moshi:moshi-kotlin:${moshi}"
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:${moshi}"
+
+    //Testing
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'androidx.arch.core:core-testing:2.1.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0'
+    testImplementation "org.mockito:mockito-inline:4.3.1"
+    testImplementation 'androidx.arch.core:core-testing:2.1.0'
+    testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.8"
+    testImplementation "org.robolectric:robolectric:$robolectric"
+    testImplementation "org.robolectric:shadows-multidex:$robolectric"
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    testImplementation 'org.mockito:mockito-core:2.26.0'
-    testImplementation 'org.mockito:mockito-inline:2.26.0'
-    testImplementation 'io.mockk:mockk:1.9.3'
 }

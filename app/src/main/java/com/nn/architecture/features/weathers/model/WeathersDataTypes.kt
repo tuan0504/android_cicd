@@ -6,17 +6,8 @@ import com.nn.architecture.core.utils.JSONParser
 import com.nn.architecture.features.weathers.db.entity.WeatherCityEntity
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.squareup.moshi.JsonQualifier
 import kotlinx.parcelize.Parcelize
 import java.util.*
-
-@Retention(AnnotationRetention.RUNTIME)
-@JsonQualifier
-annotation class CityNameResponse
-
-@Retention(AnnotationRetention.RUNTIME)
-@JsonQualifier
-annotation class WeatherDescription
 
 /******************************************************************************************
 Data Class

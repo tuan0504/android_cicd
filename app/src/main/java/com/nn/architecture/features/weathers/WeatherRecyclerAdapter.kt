@@ -10,7 +10,8 @@ import com.nn.architecture.databinding.WeatherDailyItemBinding
 import com.nn.architecture.features.weathers.model.WeatherDailyDataModel
 
 
-class WeatherRecyclerAdapter(val context: Context) : ListAdapter<WeatherDailyDataModel, WeatherRecyclerAdapter.WeatherDailyViewHolder>(COMPARE_DIFF){
+class WeatherRecyclerAdapter(val context: Context) : ListAdapter<WeatherDailyDataModel,
+        WeatherRecyclerAdapter.WeatherDailyViewHolder>(COMPARE_DIFF){
 
     private var layoutInflater: LayoutInflater = LayoutInflater.from(context)
 
